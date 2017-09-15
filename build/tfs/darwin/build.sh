@@ -28,6 +28,9 @@ step "Install distro dependencies" \
 step "Build minified & upload source maps" \
 	npm run gulp -- vscode-darwin-min upload-vscode-sourcemaps
 
+step "Generate and upload configuration.json" \
+	npm run gulp -- upload-vscode-configuration
+
 # step "Create loader snapshot"
 #	node build/lib/snapshotLoader.js
 
