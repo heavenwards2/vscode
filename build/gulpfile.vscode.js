@@ -454,6 +454,8 @@ gulp.task('upload-vscode-configuration', ['generate-vscode-configuration'], () =
 		return;
 	}
 
+	console.log(allConfigDetailsPath);
+	console.log(commit);
 	return gulp.src(allConfigDetailsPath)
 		.pipe(azure.upload({
 			account: process.env.AZURE_STORAGE_ACCOUNT,
@@ -464,12 +466,14 @@ gulp.task('upload-vscode-configuration', ['generate-vscode-configuration'], () =
 });
 
 gulp.task('generate-vscode-configuration', () => {
+	console.log(`generate 1`);
 	return new Promise((resolve, reject) => {
 		const buildDir = process.env['AGENT_BUILDDIRECTORY'];
 		if (!buildDir) {
 			return reject(new Error('$AGENT_BUILDDIRECTORY not set'));
 		}
 
+		console.log(`launching`);
 		const appPath = path.join(buildDir, 'VSCode-darwin/Visual Studio Code - Insiders.app/Contents/MacOS/Electron');
 		if (!fs.existsSync(appPath)) {
 			return reject(new Error(`${appPath} doesn't exist`));
@@ -491,6 +495,7 @@ gulp.task('generate-vscode-configuration', () => {
 			reject(err);
 		});
 	}).catch(e => {
+		console.log(e.toString());
 		// Don't fail the build
 		console.error(e.toString());
 	});
