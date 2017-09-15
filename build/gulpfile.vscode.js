@@ -481,8 +481,8 @@ gulp.task('generate-vscode-configuration', () => {
 			return reject(new Error(`${appPath} doesn't exist`));
 		}
 
-		console.log(`launching`);
-		const codeProc = cp.exec(`${appPath} --dumpDefaultConfiguration=${allConfigDetailsPath}`);
+		console.log(`launching ${appPath}`);
+		const codeProc = cp.exec(`${appPath} --dumpDefaultConfiguration='${allConfigDetailsPath}'`);
 		const timer = setTimeout(() => {
 			codeProc.kill();
 			reject(new Error('dumpDefaultConfiguration process timed out'));
