@@ -440,7 +440,6 @@ gulp.task('upload-vscode-sourcemaps', ['minify-vscode'], () => {
 	const extensions = gulp.src('extensions/**/out/**/*.map', { base: '.' });
 
 	return es.merge(vs, extensions)
-		.pipe(debug())
 		.pipe(azure.upload({
 			account: process.env.AZURE_STORAGE_ACCOUNT,
 			key: process.env.AZURE_STORAGE_ACCESS_KEY,
@@ -451,13 +450,15 @@ gulp.task('upload-vscode-sourcemaps', ['minify-vscode'], () => {
 
 const allConfigDetailsPath = path.join(os.tmpdir(), 'configuration.json');
 gulp.task('upload-vscode-configuration', ['generate-vscode-configuration'], () => {
-	if (!fs.existsSync) {
+	if (!fs.existsSync(allConfigDetailsPath)) {
 		console.error(`configuration file at ${allConfigDetailsPath} does not exist`);
 		return;
 	}
 
 	console.log(allConfigDetailsPath);
 	console.log(commit);
+
+
 	return gulp.src(allConfigDetailsPath)
 		.pipe(debug())
 		.pipe(azure.upload({
@@ -476,12 +477,12 @@ gulp.task('generate-vscode-configuration', () => {
 			return reject(new Error('$AGENT_BUILDDIRECTORY not set'));
 		}
 
-		console.log(`launching`);
 		const appPath = path.join(buildDir, 'VSCode-darwin/Visual Studio Code - Insiders.app/Contents/MacOS/Electron');
 		if (!fs.existsSync(appPath)) {
 			return reject(new Error(`${appPath} doesn't exist`));
 		}
 
+		console.log(`launching`);
 		const codeProc = cp.exec(`${appPath} --dumpDefaultConfiguration=${allConfigDetailsPath}`);
 		const timer = setTimeout(() => {
 			codeProc.kill();
@@ -490,6 +491,8 @@ gulp.task('generate-vscode-configuration', () => {
 
 		codeProc.on('exit', () => {
 			clearTimeout(timer);
+			console.log(`exit`);
+			console.log(allConfigDetailsPath);
 			resolve();
 		});
 
