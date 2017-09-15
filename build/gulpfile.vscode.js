@@ -34,6 +34,7 @@ const shrinkwrap = require('../npm-shrinkwrap.json');
 const crypto = require('crypto');
 const i18n = require('./lib/i18n');
 const glob = require('glob');
+const debug = require('gulp-debug');
 
 const productDependencies = Object.keys(product.dependencies || {});
 const dependencies = Object.keys(shrinkwrap.dependencies)
@@ -439,6 +440,7 @@ gulp.task('upload-vscode-sourcemaps', ['minify-vscode'], () => {
 	const extensions = gulp.src('extensions/**/out/**/*.map', { base: '.' });
 
 	return es.merge(vs, extensions)
+		.pipe(debug())
 		.pipe(azure.upload({
 			account: process.env.AZURE_STORAGE_ACCOUNT,
 			key: process.env.AZURE_STORAGE_ACCESS_KEY,
@@ -457,6 +459,7 @@ gulp.task('upload-vscode-configuration', ['generate-vscode-configuration'], () =
 	console.log(allConfigDetailsPath);
 	console.log(commit);
 	return gulp.src(allConfigDetailsPath)
+		.pipe(debug())
 		.pipe(azure.upload({
 			account: process.env.AZURE_STORAGE_ACCOUNT,
 			key: process.env.AZURE_STORAGE_ACCESS_KEY,
