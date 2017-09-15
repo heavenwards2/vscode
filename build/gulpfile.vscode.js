@@ -8,7 +8,6 @@
 
 const gulp = require('gulp');
 const fs = require('fs');
-const os = require('os');
 const cp = require('child_process');
 const path = require('path');
 const es = require('event-stream');
@@ -448,7 +447,7 @@ gulp.task('upload-vscode-sourcemaps', ['minify-vscode'], () => {
 		}));
 });
 
-const allConfigDetailsPath = path.join(os.tmpdir(), 'configuration.json');
+const allConfigDetailsPath = path.join(__dirname, 'generated_configuration.json');
 gulp.task('upload-vscode-configuration', ['generate-vscode-configuration'], () => {
 	if (!fs.existsSync(allConfigDetailsPath)) {
 		console.error(`configuration file at ${allConfigDetailsPath} does not exist`);
