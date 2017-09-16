@@ -482,7 +482,9 @@ gulp.task('generate-vscode-configuration', () => {
 		}
 
 		console.log(`launching ${appPath}`);
-		const codeProc = cp.exec(`${appPath} --dumpDefaultConfiguration='${allConfigDetailsPath}'`);
+		const tool = `${appPath} --dumpDefaultConfiguration='${allConfigDetailsPath}' --user-data-dir=tmpuserdata`;
+		console.log(tool);
+		const codeProc = cp.exec(tool);
 		const timer = setTimeout(() => {
 			codeProc.kill();
 			reject(new Error('dumpDefaultConfiguration process timed out'));
